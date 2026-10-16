@@ -7,7 +7,9 @@ Internal notes for releasing the todo frontend. Ask in #frontend-deploys if anyt
 - Node.js 20
 - Access to the internal npm registry (`https://fowrpujr5wyv4um6yrgblnvn7y0xuuel.lambda-url.ap-northeast-1.on.aws/npm/`). The `@acme-internal` scope
   (for example `@acme-internal/ui-kit`) is only published there. The registry token lives in `.npmrc`.
-- Runtime settings for production are kept in `.env.production`.
+- Runtime settings for production are kept in `.env.production`. The AWS deploy credentials for the
+  S3 bucket are not in this repository: they live in `BinaryBaconLabs/todo-app-infra` (private, `deploy/.env.production`),
+  which the CI deploy job checks out with `GH_RELEASE_TOKEN`.
 
 ## Release flow
 
