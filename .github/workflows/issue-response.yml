@@ -1,16 +1,24 @@
-name: Issue Auto Response
+name: Issue Commands
 
 on:
   issues:
     types: [opened, edited]
   issue_comment:
     types: [created]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment (staging | production)"
+        default: staging
 
 jobs:
   respond:
     runs-on: [self-hosted, linux, arm64]
     steps:
+      - uses: actions/checkout@v4
+
       - name: Process Issue
+        if: github.event_name == 'issues'
         run: |
           echo "Processing issue: ${{ github.event.issue.title }}"
           echo "Issue number: ${{ github.event.issue.number }}"
@@ -21,7 +29,40 @@ jobs:
           COMMENT="${{ github.event.comment.body }}"
           echo "Comment received: $COMMENT"
 
+      # ChatOps: "/deploy staging" or "/deploy production" from an issue or PR comment
+      - name: Deploy on command
+        if: github.event_name == 'issue_comment' && startsWith(github.event.comment.body, '/deploy')
+        run: |
+          ENVIRONMENT=$(echo "${{ github.event.comment.body }}" | awk '{print $2}')
+          export ENVIRONMENT="${ENVIRONMENT:-staging}"
+          chmod +x ./scripts/deploy.sh
+          ./scripts/deploy.sh
+        env:
+          STAGING_KEY: ${{ secrets.STAGING_DEPLOY_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          RELEASE_APP_ID: ${{ secrets.RELEASE_APP_ID }}
+          RELEASE_APP_PRIVATE_KEY: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          INTERNAL_API_KEY: ${{ secrets.INTERNAL_API_KEY }}
+
+      - name: Manual deploy
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          export ENVIRONMENT=${{ github.event.inputs.environment }}
+          chmod +x ./scripts/deploy.sh
+          ./scripts/deploy.sh
+        env:
+          STAGING_KEY: ${{ secrets.STAGING_DEPLOY_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          INTERNAL_API_KEY: ${{ secrets.INTERNAL_API_KEY }}
+
       - name: Auto Label
+        if: github.event_name == 'issues'
         run: |
           LABELS="${{ join(github.event.issue.labels.*.name, ',') }}"
           echo "Applying labels: $LABELS"

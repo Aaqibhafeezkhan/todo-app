@@ -14,6 +14,14 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
 
+      # Reuse the artifact from the CI run instead of building twice on the runner
+      - name: Download build
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Deploy to Staging
         run: |
           chmod +x ./scripts/deploy.sh
