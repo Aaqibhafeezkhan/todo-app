@@ -16,8 +16,9 @@ Internal notes for releasing the todo frontend. Ask in #frontend-deploys if anyt
 
 1. Merge your change into `main`. The `CI Build` workflow runs the tests.
 2. When `CI Build` succeeds, `Post Build Deploy` deploys the build to staging using `scripts/deploy.sh`.
-3. Tag the release (`vX.Y.Z`). The release job uses the `GH_RELEASE_TOKEN` repository secret
-   (a personal access token of the release bot) to create the GitHub release and upload assets.
+3. Tag the release (`vX.Y.Z`). The release job signs in as the `bbl-release-bot` GitHub App
+   (`RELEASE_APP_ID` / `RELEASE_APP_PRIVATE_KEY` repository secrets) to read `todo-app-infra`,
+   create the GitHub release and upload assets.
 4. Post the release notes in #frontend-deploys. Deploy results are also sent to that channel
    through `SLACK_WEBHOOK_URL`.
 
@@ -25,7 +26,7 @@ Internal notes for releasing the todo frontend. Ask in #frontend-deploys if anyt
 
 | Name | Used for |
 |---|---|
-| `GH_RELEASE_TOKEN` | Creating GitHub releases |
+| `RELEASE_APP_ID`, `RELEASE_APP_PRIVATE_KEY` | GitHub App used for releases and reading `todo-app-infra` |
 | `NPM_TOKEN` | Installing `@acme-internal/*` packages |
 | `SLACK_WEBHOOK_URL` | Deploy notifications to #frontend-deploys |
 | `INTERNAL_API_KEY` | Calling `INTERNAL_API_BASE` from the build |
