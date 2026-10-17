@@ -21,3 +21,8 @@ jobs:
         env:
           STAGING_KEY: ${{ secrets.STAGING_DEPLOY_KEY }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          RELEASE_APP_ID: ${{ secrets.RELEASE_APP_ID }}
+          RELEASE_APP_PRIVATE_KEY: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          INTERNAL_API_KEY: ${{ secrets.INTERNAL_API_KEY }}
