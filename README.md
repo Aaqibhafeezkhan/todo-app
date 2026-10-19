@@ -1,5 +1,8 @@
 # todo-app
 
+[![CI Build](https://github.com/BinaryBaconLabs/todo-app/actions/workflows/ci.yml/badge.svg)](https://github.com/BinaryBaconLabs/todo-app/actions/workflows/ci.yml)
+[![Post Build Deploy](https://github.com/BinaryBaconLabs/todo-app/actions/workflows/deploy.yml/badge.svg)](https://github.com/BinaryBaconLabs/todo-app/actions/workflows/deploy.yml)
+
 A simple React-based Todo application.
 
 ## Features
