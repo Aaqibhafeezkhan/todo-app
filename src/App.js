@@ -8,7 +8,7 @@ function App() {
   const addTodo = (e) => {
     e.preventDefault();
     if (input.trim()) {
-      setTodos([...todos, { id: Date.now(), text: input, completed: false }]);
+      setTodos([...todos, { id: Date.now(), text: input.trim(), completed: false }]);
       setInput('');
     }
   };
