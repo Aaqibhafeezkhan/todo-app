@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import './App.css';
 
 function App() {
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState('');
+  const inputRef = useRef(null);
 
   const addTodo = (e) => {
     e.preventDefault();
     if (input.trim()) {
       setTodos([...todos, { id: Date.now(), text: input.trim(), completed: false }]);
       setInput('');
+      inputRef.current.focus();
     }
   };
 
@@ -28,6 +30,7 @@ function App() {
       <h1>Todo App</h1>
       <form onSubmit={addTodo} className="todo-form">
         <input
+          ref={inputRef}
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}

@@ -17,6 +17,14 @@ test('labels the delete button with the todo text', () => {
   expect(screen.getByRole('button', { name: /delete walk the dog/i })).toBeInTheDocument();
 });
 
+test('keeps focus in the input after adding a todo', () => {
+  render(<App />);
+  const input = screen.getByPlaceholderText(/Add a new task/i);
+  fireEvent.change(input, { target: { value: 'call the plumber' } });
+  fireEvent.submit(input.closest('form'));
+  expect(input).toHaveFocus();
+});
+
 test('renders todo app title', () => {
   render(<App />);
   const titleElement = screen.getByText(/Todo App/i);
