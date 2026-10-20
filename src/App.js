@@ -40,11 +40,17 @@ function App() {
         {todos.map(todo => (
           <li key={todo.id} className={`todo-item ${todo.completed ? 'completed' : ''}`}>
             <span onClick={() => toggleTodo(todo.id)}>{todo.text}</span>
-            <button onClick={() => deleteTodo(todo.id)} className="delete-btn">×</button>
+            <button
+              onClick={() => deleteTodo(todo.id)}
+              className="delete-btn"
+              aria-label={`Delete ${todo.text}`}
+            >×</button>
           </li>
         ))}
       </ul>
-      {todos.length === 0 && <p className="empty">No tasks yet. Add one above!</p>}
+      {todos.length === 0 && (
+        <p className="empty" role="status">No tasks yet. Add one above!</p>
+      )}
     </div>
   );
 }
