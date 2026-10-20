@@ -9,6 +9,14 @@ test('trims whitespace around a new todo', () => {
   expect(screen.getByText('buy milk')).toBeInTheDocument();
 });
 
+test('labels the delete button with the todo text', () => {
+  render(<App />);
+  const input = screen.getByPlaceholderText(/Add a new task/i);
+  fireEvent.change(input, { target: { value: 'walk the dog' } });
+  fireEvent.submit(input.closest('form'));
+  expect(screen.getByRole('button', { name: /delete walk the dog/i })).toBeInTheDocument();
+});
+
 test('renders todo app title', () => {
   render(<App />);
   const titleElement = screen.getByText(/Todo App/i);
