@@ -25,7 +25,12 @@ function App() {
     setTodos(todos.filter(todo => todo.id !== id));
   };
 
+  const clearCompleted = () => {
+    setTodos(todos.filter(todo => !todo.completed));
+  };
+
   const remaining = todos.filter(todo => !todo.completed).length;
+  const completed = todos.length - remaining;
 
   return (
     <div className="app">
@@ -54,9 +59,18 @@ function App() {
         ))}
       </ul>
       {todos.length > 0 && (
-        <p className="remaining">
-          {remaining} of {todos.length} remaining
-        </p>
+        <div className="todo-footer">
+          <p className="remaining">
+            {remaining} of {todos.length} remaining
+          </p>
+          {completed > 0 && (
+            <button
+              type="button"
+              onClick={clearCompleted}
+              className="clear-btn"
+            >Clear completed</button>
+          )}
+        </div>
       )}
       {todos.length === 0 && (
         <p className="empty" role="status">No tasks yet. Add one above!</p>

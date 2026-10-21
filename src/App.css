@@ -89,9 +89,27 @@ h1 {
   padding: 20px;
 }
 
+.todo-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
 .remaining {
-  text-align: right;
   color: #666;
   font-size: 14px;
-  margin-top: 12px;
+}
+
+.clear-btn {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+}
+
+.clear-btn:hover {
+  text-decoration: underline;
 }

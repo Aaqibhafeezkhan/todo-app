@@ -31,6 +31,19 @@ test('renders todo app title', () => {
   expect(titleElement).toBeInTheDocument();
 });
 
+test('clears completed todos but keeps the open ones', () => {
+  render(<App />);
+  const input = screen.getByPlaceholderText(/Add a new task/i);
+  fireEvent.change(input, { target: { value: 'water the plants' } });
+  fireEvent.submit(input.closest('form'));
+  fireEvent.change(input, { target: { value: 'take out the bins' } });
+  fireEvent.submit(input.closest('form'));
+  fireEvent.click(screen.getByText('water the plants'));
+  fireEvent.click(screen.getByRole('button', { name: /clear completed/i }));
+  expect(screen.queryByText('water the plants')).not.toBeInTheDocument();
+  expect(screen.getByText('take out the bins')).toBeInTheDocument();
+});
+
 test('counts the todos that are still open', () => {
   render(<App />);
   const input = screen.getByPlaceholderText(/Add a new task/i);
