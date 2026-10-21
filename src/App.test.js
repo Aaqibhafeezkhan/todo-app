@@ -30,3 +30,14 @@ test('renders todo app title', () => {
   const titleElement = screen.getByText(/Todo App/i);
   expect(titleElement).toBeInTheDocument();
 });
+
+test('counts the todos that are still open', () => {
+  render(<App />);
+  const input = screen.getByPlaceholderText(/Add a new task/i);
+  fireEvent.change(input, { target: { value: 'water the plants' } });
+  fireEvent.submit(input.closest('form'));
+  fireEvent.change(input, { target: { value: 'take out the bins' } });
+  fireEvent.submit(input.closest('form'));
+  fireEvent.click(screen.getByText('water the plants'));
+  expect(screen.getByText('1 of 2 remaining')).toBeInTheDocument();
+});

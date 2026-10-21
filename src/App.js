@@ -25,6 +25,8 @@ function App() {
     setTodos(todos.filter(todo => todo.id !== id));
   };
 
+  const remaining = todos.filter(todo => !todo.completed).length;
+
   return (
     <div className="app">
       <h1>Todo App</h1>
@@ -51,6 +53,11 @@ function App() {
           </li>
         ))}
       </ul>
+      {todos.length > 0 && (
+        <p className="remaining">
+          {remaining} of {todos.length} remaining
+        </p>
+      )}
       {todos.length === 0 && (
         <p className="empty" role="status">No tasks yet. Add one above!</p>
       )}

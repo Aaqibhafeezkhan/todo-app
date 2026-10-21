@@ -88,3 +88,10 @@ h1 {
   color: #999;
   padding: 20px;
 }
+
+.remaining {
+  text-align: right;
+  color: #666;
+  font-size: 14px;
+  margin-top: 12px;
+}
