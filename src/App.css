@@ -46,6 +46,11 @@ h1 {
   background: #0056b3;
 }
 
+.add-btn:disabled {
+  background: #9dc7f0;
+  cursor: not-allowed;
+}
+
 .todo-list {
   list-style: none;
 }

@@ -44,7 +44,7 @@ function App() {
           placeholder="Add a new task..."
           className="todo-input"
         />
-        <button type="submit" className="add-btn">Add</button>
+        <button type="submit" className="add-btn" disabled={!input.trim()}>Add</button>
       </form>
       <ul className="todo-list">
         {todos.map(todo => (

@@ -25,6 +25,16 @@ test('keeps focus in the input after adding a todo', () => {
   expect(input).toHaveFocus();
 });
 
+test('disables the add button until there is a task to add', () => {
+  render(<App />);
+  const input = screen.getByPlaceholderText(/Add a new task/i);
+  expect(screen.getByRole('button', { name: /^add$/i })).toBeDisabled();
+  fireEvent.change(input, { target: { value: 'read a book' } });
+  expect(screen.getByRole('button', { name: /^add$/i })).toBeEnabled();
+  fireEvent.change(input, { target: { value: '   ' } });
+  expect(screen.getByRole('button', { name: /^add$/i })).toBeDisabled();
+});
+
 test('renders todo app title', () => {
   render(<App />);
   const titleElement = screen.getByText(/Todo App/i);
