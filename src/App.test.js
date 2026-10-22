@@ -17,6 +17,16 @@ test('labels the delete button with the todo text', () => {
   expect(screen.getByRole('button', { name: /delete walk the dog/i })).toBeInTheDocument();
 });
 
+test('removes a todo when its delete button is clicked', () => {
+  render(<App />);
+  const input = screen.getByPlaceholderText(/Add a new task/i);
+  fireEvent.change(input, { target: { value: 'renew the passport' } });
+  fireEvent.submit(input.closest('form'));
+  fireEvent.click(screen.getByRole('button', { name: /delete renew the passport/i }));
+  expect(screen.queryByText('renew the passport')).not.toBeInTheDocument();
+  expect(screen.getByText(/No tasks yet/i)).toBeInTheDocument();
+});
+
 test('keeps focus in the input after adding a todo', () => {
   render(<App />);
   const input = screen.getByPlaceholderText(/Add a new task/i);
