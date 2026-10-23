@@ -10,6 +10,8 @@ A simple React-based Todo application.
 - Add new tasks
 - Mark tasks as complete
 - Delete tasks
+- Clear all completed tasks at once
+- See how many tasks are still open
 - Clean and responsive UI
 
 ## Getting Started
