@@ -23,8 +23,8 @@ npm start
 
 ## Development
 
-Node 20 is what CI uses. `npm install` then `npm start` for the dev server, `npm test` for the
-test suite.
+Node 20 is what CI uses; with nvm, `nvm use` picks it up from `.nvmrc`. `npm install` then
+`npm start` for the dev server, `npm test` for the test suite.
 
 ## CI and deploys
 
