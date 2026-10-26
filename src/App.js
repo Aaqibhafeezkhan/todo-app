@@ -2,9 +2,24 @@ import React, { useRef, useState, useEffect } from 'react';
 import './App.css';
 
 const STORAGE_KEY = 'todos';
+const THEME_STORAGE_KEY = 'todo-app-theme';
+
+function getInitialTheme() {
+  try {
+    const savedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      return savedTheme;
+    }
+  } catch {
+    // Fall back to the system preference when storage is unavailable.
+  }
+
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'light';
+}
 
 function App() {
-  // Load saved todos when the app starts.
   const [todos, setTodos] = useState(() => {
     try {
       const storedTodos = window.localStorage.getItem(STORAGE_KEY);
@@ -25,15 +40,14 @@ function App() {
 
       return validTodos ? parsedTodos : [];
     } catch {
-      // Missing access or corrupt JSON should not crash the app.
       return [];
     }
   });
 
   const [input, setInput] = useState('');
+  const [theme, setTheme] = useState(getInitialTheme);
   const inputRef = useRef(null);
 
-  // Save todos whenever the list changes.
   useEffect(() => {
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
@@ -43,9 +57,18 @@ function App() {
   }, [todos]);
 
   useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+
+    try {
+      window.localStorage.setItem(THEME_STORAGE_KEY, theme);
+    } catch {
+      // Theme switching still works for the current session.
+    }
+  }, [theme]);
+
+  useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.target.tagName === 'INPUT') return;
-
       if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
 
       if (e.key === 'n') {
@@ -55,10 +78,7 @@ function App() {
     };
 
     document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   const handleInputKeyDown = (e) => {
@@ -106,7 +126,19 @@ function App() {
 
   return (
     <div className="app">
-      <h1>Todo App</h1>
+      <header className="app-header">
+        <h1>Todo App</h1>
+        <button
+          type="button"
+          className="theme-toggle"
+          onClick={() => setTheme(currentTheme => currentTheme === 'dark' ? 'light' : 'dark')}
+          aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+          title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+        >
+          <span aria-hidden="true">{theme === 'dark' ? '☀' : '☾'}</span>
+          <span>{theme === 'dark' ? 'Light mode' : 'Dark mode'}</span>
+        </button>
+      </header>
 
       <form onSubmit={addTodo} className="todo-form">
         <input
@@ -117,6 +149,7 @@ function App() {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Add a new task..."
           className="todo-input"
+          aria-label="New task"
         />
 
         <button
@@ -136,7 +169,6 @@ function App() {
             tabIndex={0}
             onKeyDown={(e) => {
               if (e.target !== e.currentTarget) return;
-
               if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
 
               if (e.key === 'x') {
@@ -149,6 +181,7 @@ function App() {
             </span>
 
             <button
+              type="button"
               onClick={() => deleteTodo(todo.id)}
               className="delete-btn"
               aria-label={`Delete ${todo.text}`}
