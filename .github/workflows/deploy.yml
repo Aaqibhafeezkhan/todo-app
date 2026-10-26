@@ -13,6 +13,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
+          allow-unsafe-pr-checkout: true
 
       # Reuse the artifact from the CI run instead of building twice on the runner
       - name: Download build
