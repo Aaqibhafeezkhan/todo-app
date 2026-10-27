@@ -81,7 +81,7 @@ button:focus-visible {
 .todo-form {
   display: flex;
   gap: 8px;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
 }
 
 .todo-input {
@@ -121,6 +121,36 @@ button:focus-visible {
 .add-btn:disabled {
   background: #9dc7f0;
   cursor: not-allowed;
+}
+
+.todo-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.filter-btn:hover {
+  background: var(--page-background);
+}
+
+.filter-btn.active {
+  border-color: #007bff;
+  background: #007bff;
+  color: #ffffff;
 }
 
 .todo-list {
