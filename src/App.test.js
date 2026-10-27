@@ -74,3 +74,57 @@ test('counts the todos that are still open', () => {
   fireEvent.click(screen.getByText('water the plants'));
   expect(screen.getByText('1 of 2 remaining')).toBeInTheDocument();
 });
+
+test('shows all todos when the All filter is selected', () => {
+  window.localStorage.clear();
+  render(<App />);
+  const input = screen.getByPlaceholderText(/Add a new task/i);
+
+  fireEvent.change(input, { target: { value: 'active task' } });
+  fireEvent.submit(input.closest('form'));
+  fireEvent.change(input, { target: { value: 'completed task' } });
+  fireEvent.submit(input.closest('form'));
+  fireEvent.click(screen.getByText('completed task'));
+
+  fireEvent.click(screen.getByRole('button', { name: 'All' }));
+
+  expect(screen.getByText('active task')).toBeInTheDocument();
+  expect(screen.getByText('completed task')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'All' })).toHaveAttribute('aria-pressed', 'true');
+});
+
+test('shows only active todos when the Active filter is selected', () => {
+  window.localStorage.clear();
+  render(<App />);
+  const input = screen.getByPlaceholderText(/Add a new task/i);
+
+  fireEvent.change(input, { target: { value: 'active task' } });
+  fireEvent.submit(input.closest('form'));
+  fireEvent.change(input, { target: { value: 'completed task' } });
+  fireEvent.submit(input.closest('form'));
+  fireEvent.click(screen.getByText('completed task'));
+
+  fireEvent.click(screen.getByRole('button', { name: 'Active' }));
+
+  expect(screen.getByText('active task')).toBeInTheDocument();
+  expect(screen.queryByText('completed task')).not.toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Active' })).toHaveAttribute('aria-pressed', 'true');
+});
+
+test('shows only completed todos when the Completed filter is selected', () => {
+  window.localStorage.clear();
+  render(<App />);
+  const input = screen.getByPlaceholderText(/Add a new task/i);
+
+  fireEvent.change(input, { target: { value: 'active task' } });
+  fireEvent.submit(input.closest('form'));
+  fireEvent.change(input, { target: { value: 'completed task' } });
+  fireEvent.submit(input.closest('form'));
+  fireEvent.click(screen.getByText('completed task'));
+
+  fireEvent.click(screen.getByRole('button', { name: 'Completed' }));
+
+  expect(screen.queryByText('active task')).not.toBeInTheDocument();
+  expect(screen.getByText('completed task')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Completed' })).toHaveAttribute('aria-pressed', 'true');
+});
