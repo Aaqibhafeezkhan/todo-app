@@ -5,6 +5,7 @@ on:
     types: [opened, synchronize, reopened]
 
 permissions:
+  actions: read
   contents: write
   pull-requests: write
   issues: write
@@ -23,11 +24,42 @@ jobs:
         with:
           node-version: '20'
 
+      # npm ci gets killed on the small arm64 runner, so unpack the node_modules that CI Build
+      # uploads from main and only install when there is nothing to unpack
+      - name: Find the latest main build
+        id: main-build
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runs = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'ci.yml',
+              branch: 'main',
+              event: 'push',
+              status: 'success',
+              per_page: 1,
+            });
+            core.setOutput('run_id', runs.data.workflow_runs[0]?.id ?? '');
+
+      - name: Download node_modules from the main build
+        if: steps.main-build.outputs.run_id != ''
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: node-modules
+          run-id: ${{ steps.main-build.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Install and Test
         run: |
-          npm ci
+          if [ -f node_modules.tar.gz ]; then
+            tar -xzf node_modules.tar.gz && rm node_modules.tar.gz
+          else
+            NODE_OPTIONS=--max-old-space-size=512 npm ci --no-audit --no-fund
+          fi
           npm run lint --if-present
-          npm test
+          npm test -- --watchAll=false --maxWorkers=2
         env:
           DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
