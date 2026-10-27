@@ -46,6 +46,7 @@ function App() {
 
   const [input, setInput] = useState('');
   const [theme, setTheme] = useState(getInitialTheme);
+  const [filter, setFilter] = useState('all');
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -123,6 +124,11 @@ function App() {
 
   const remaining = todos.filter(todo => !todo.completed).length;
   const completed = todos.length - remaining;
+  const filteredTodos = todos.filter((todo) => {
+    if (filter === 'active') return !todo.completed;
+    if (filter === 'completed') return todo.completed;
+    return true;
+  });
 
   return (
     <div className="app">
@@ -161,8 +167,26 @@ function App() {
         </button>
       </form>
 
+      <div className="todo-filters" role="group" aria-label="Filter todos">
+        {[
+          { value: 'all', label: 'All' },
+          { value: 'active', label: 'Active' },
+          { value: 'completed', label: 'Completed' }
+        ].map((option) => (
+          <button
+            key={option.value}
+            type="button"
+            className={`filter-btn ${filter === option.value ? 'active' : ''}`}
+            aria-pressed={filter === option.value}
+            onClick={() => setFilter(option.value)}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+
       <ul className="todo-list">
-        {todos.map((todo) => (
+        {filteredTodos.map((todo) => (
           <li
             key={todo.id}
             className={`todo-item ${todo.completed ? 'completed' : ''}`}
@@ -191,6 +215,12 @@ function App() {
           </li>
         ))}
       </ul>
+
+      {todos.length > 0 && filteredTodos.length === 0 && (
+        <p className="empty" role="status">
+          {filter === 'active' ? 'No active tasks.' : 'No completed tasks.'}
+        </p>
+      )}
 
       {todos.length > 0 && (
         <div className="todo-footer">
