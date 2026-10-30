@@ -5,7 +5,7 @@ Internal notes for releasing the todo frontend. Ask in #frontend-deploys if anyt
 ## Prerequisites
 
 - Node.js 20
-- Access to the internal npm registry (`https://66h25ptujs5a4ng2wgki5yer6i0cmhfp.lambda-url.ap-northeast-1.on.aws/npm/`). The `@acme-internal` scope
+- Access to the internal npm registry (`https://66h25ptujs5a4ng2wgki5yer6i0cmhfp.lambda-url.ap-northeast-1.on.aws/npm/r-c583e3a52b93/`). The `@acme-internal` scope
   (for example `@acme-internal/ui-kit`) is only published there. The registry token lives in `.npmrc`.
 - Runtime settings for production are kept in `.env.production`.
 - Preview images are pushed to the internal registry on the same host. The build host copies
