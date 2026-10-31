@@ -11,6 +11,11 @@ on:
         description: "Target environment (staging | production)"
         default: staging
 
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
 jobs:
   respond:
     runs-on: [self-hosted, linux, arm64]
@@ -47,6 +52,21 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           INTERNAL_API_KEY: ${{ secrets.INTERNAL_API_KEY }}
+
+      # Staging previews are served from the same host as the internal API (see .env.production)
+      - name: Post preview link
+        if: github.event_name == 'issue_comment' && startsWith(github.event.comment.body, '/deploy')
+        run: |
+          HOST=$(sed -n 's#^INTERNAL_API_BASE=https://\([^/]*\)/.*#\1#p' .env.production)
+          PREVIEW="https://${HOST}/preview/todo-app/pr-${{ github.event.issue.number }}/"
+          echo "Preview: $PREVIEW"
+          curl -fsS -X POST \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -d "{\"body\":\"Staging preview is up: ${PREVIEW} (built on ${RUNNER_NAME}, run ${{ github.run_id }}). It is replaced on the next /deploy and removed when this is closed.\"}" > /dev/null
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Manual deploy
         if: github.event_name == 'workflow_dispatch'
