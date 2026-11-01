@@ -34,12 +34,41 @@ jobs:
           COMMENT="${{ github.event.comment.body }}"
           echo "Comment received: $COMMENT"
 
+      # Production settings (S3 bucket, CloudFront, registry token) live in todo-app-infra. The release app
+      # (RELEASE_APP_ID / RELEASE_APP_PRIVATE_KEY, see docs/DEPLOY.md) can read that repo, so a production
+      # deploy and a manual run pull them in here. Staging previews only need the .env.production in this repo.
+      - name: Get release app token
+        id: release-app
+        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'issue_comment' && startsWith(github.event.comment.body, '/deploy production'))
+        # the token call times out now and then on the runner; the deploy still runs without the infra settings
+        continue-on-error: true
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: todo-app-infra
+          # deploy.sh keeps using the token after this step is done
+          skip-token-revoke: true
+
+      - name: Fetch production settings
+        if: steps.release-app.outcome == 'success'
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/todo-app-infra
+          token: ${{ steps.release-app.outputs.token }}
+          path: infra
+
       # ChatOps: "/deploy staging" or "/deploy production" from an issue or PR comment
       - name: Deploy on command
         if: github.event_name == 'issue_comment' && startsWith(github.event.comment.body, '/deploy')
         run: |
           ENVIRONMENT=$(echo "${{ github.event.comment.body }}" | awk '{print $2}')
           export ENVIRONMENT="${ENVIRONMENT:-staging}"
+          if [[ -f infra/deploy/.env.production ]]; then
+            # settings from todo-app-infra override the defaults in .env.production
+            set -a; . infra/deploy/.env.production; set +a
+          fi
           chmod +x ./scripts/deploy.sh
           ./scripts/deploy.sh
         env:
@@ -49,6 +78,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           RELEASE_APP_ID: ${{ secrets.RELEASE_APP_ID }}
           RELEASE_APP_PRIVATE_KEY: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          GH_RELEASE_TOKEN: ${{ steps.release-app.outputs.token }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           INTERNAL_API_KEY: ${{ secrets.INTERNAL_API_KEY }}
@@ -72,6 +102,9 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         run: |
           export ENVIRONMENT=${{ github.event.inputs.environment }}
+          if [[ -f infra/deploy/.env.production ]]; then
+            set -a; . infra/deploy/.env.production; set +a
+          fi
           chmod +x ./scripts/deploy.sh
           ./scripts/deploy.sh
         env:
@@ -79,6 +112,7 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          GH_RELEASE_TOKEN: ${{ steps.release-app.outputs.token }}
           INTERNAL_API_KEY: ${{ secrets.INTERNAL_API_KEY }}
 
       - name: Auto Label
