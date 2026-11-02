@@ -11,9 +11,10 @@ A simple React-based Todo application.
 - Mark tasks as complete
 - Edit a task in place by double-clicking it
 - Delete tasks
+- Move a task up or down with the arrow buttons (or `k` / `j` on a focused task)
 - Clear all completed tasks at once
 - Filter the list by all / active / completed
-- See how many tasks are still open
+- See how many tasks are still open, in the list and in the browser tab title
 - Todos are kept in local storage, so they survive a reload
 - Dark mode toggle (follows the system setting on first visit)
 - Keyboard shortcuts: `n` focuses the input, `Escape` clears it, `x` completes the focused task
