@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Move a todo up or down with the arrow buttons, or `k` / `j` on a focused todo (#14, #15)
+- The open task count shows in the browser tab title (#16, #17)
+
+### Changed
+
+- `/deploy production` reads the production settings from `todo-app-infra` instead of the repo
+- The staging preview link is posted back on the PR after `/deploy`
+
 ## v0.2.0 - 2026-10-29
 
 Most of this release came in through hacktoberfest pull requests. Thanks @Fazal-Abbas2052, @dharamdan01,
