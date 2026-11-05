@@ -6,6 +6,7 @@
 
 - Move a todo up or down with the arrow buttons, or `k` / `j` on a focused todo (#14, #15)
 - The open task count shows in the browser tab title (#16, #17)
+- Export todos to a JSON file and import them back; invalid files leave the current list unchanged (#18, #19)
 
 ### Changed
 

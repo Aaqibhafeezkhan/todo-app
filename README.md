@@ -16,6 +16,7 @@ A simple React-based Todo application.
 - Filter the list by all / active / completed
 - See how many tasks are still open, in the list and in the browser tab title
 - Todos are kept in local storage, so they survive a reload
+- Export the list as a JSON file and import it again later (a file that is not a todo list is ignored)
 - Dark mode toggle (follows the system setting on first visit)
 - Keyboard shortcuts: `n` focuses the input, `Escape` clears it, `x` completes the focused task
 - Clean and responsive UI
