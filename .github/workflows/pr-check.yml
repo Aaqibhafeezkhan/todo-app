@@ -37,8 +37,9 @@ jobs:
 
       - name: Comment test summary
         if: always()
+        # A failed comment (deleted PR, API hiccup) should not turn the check red, so no -f here.
         run: |
-          curl -fsS -X POST \
+          curl -sS -X POST \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments" \
