@@ -130,6 +130,26 @@ button:focus-visible {
   margin-bottom: 16px;
 }
 
+.search-input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--input-border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.search-input::placeholder {
+  color: var(--muted-text);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
 .filter-btn {
   display: inline-flex;
   align-items: center;

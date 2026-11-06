@@ -317,3 +317,41 @@ test('keeps the current list when the imported file is not a todo list', async (
   expect(screen.queryByText('not a list')).not.toBeInTheDocument();
   expect(screen.getByText('1 of 1 remaining')).toBeInTheDocument();
 });
+
+
+test('searches todos by text without changing the overall counts', () => {
+  window.localStorage.clear();
+  render(<App />);
+
+  const input = screen.getByPlaceholderText(/Add a new task/i);
+
+  ['buy milk', 'walk the dog'].forEach((task) => {
+    fireEvent.change(input, { target: { value: task } });
+    fireEvent.submit(input.closest('form'));
+  });
+
+  const searchInput = screen.getByRole('searchbox', { name: 'Search tasks' });
+  fireEvent.change(searchInput, { target: { value: 'milk' } });
+
+  expect(screen.getByText('buy milk')).toBeInTheDocument();
+  expect(screen.queryByText('walk the dog')).not.toBeInTheDocument();
+  expect(screen.getAllByRole('listitem')).toHaveLength(1);
+  expect(screen.getByText('2 of 2 remaining')).toBeInTheDocument();
+  expect(document.title).toBe('(2) todo-app');
+});
+
+test('shows a search-specific empty state when no todos match', () => {
+  window.localStorage.clear();
+  render(<App />);
+
+  const input = screen.getByPlaceholderText(/Add a new task/i);
+  fireEvent.change(input, { target: { value: 'buy milk' } });
+  fireEvent.submit(input.closest('form'));
+
+  fireEvent.change(screen.getByRole('searchbox', { name: 'Search tasks' }), {
+    target: { value: 'coffee' },
+  });
+
+  expect(screen.getByRole('status')).toHaveTextContent('No tasks match your search.');
+  expect(screen.getByText('1 of 1 remaining')).toBeInTheDocument();
+});
