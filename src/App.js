@@ -254,15 +254,14 @@ function App() {
   useEffect(() => {
     document.title = remaining > 0 ? `(${remaining}) todo-app` : "todo-app";
   }, [remaining]);
+  const needle = query.trim().toLowerCase();
   const filteredTodos = todos
     .filter((todo) => {
       if (filter === "active") return !todo.completed;
       if (filter === "completed") return todo.completed;
       return true;
     })
-    .filter((todo) =>
-      todo.text.toLowerCase().includes(query.trim().toLowerCase()),
-    );
+    .filter((todo) => todo.text.toLowerCase().includes(needle));
 
   return (
     <div className="app">
