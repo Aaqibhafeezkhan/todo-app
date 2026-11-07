@@ -19,6 +19,8 @@ Thanks for helping. Small pull requests are best; jarman reviews everything.
 - `CI Build` runs on GitHub-hosted runners.
 - The security check and preview deploys run on our self-hosted runner. If a check sits in
   "queued", the runner is usually busy or offline and will pick the job up when it is back.
+- The security check runs `scripts/check_config.py` (deploy config is complete) and then
+  `scripts/security-scan.sh` (nothing secret in the diff) against your branch.
 - Once `CI Build` is green, comment `/deploy staging` on the pull request to run
   `scripts/deploy.sh` on the runner. Production releases are handled by jarman (see `docs/DEPLOY.md`).
 - `/deploy production` is for jarman: before the deploy script runs, the job signs in as the release app

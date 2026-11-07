@@ -27,6 +27,11 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           allow-unsafe-pr-checkout: true
 
+      # The deploy config is spread over four files and a PR that drops a key only fails hours later in
+      # the staging deploy, so check it on the branch first (key names only, see scripts/check_config.py).
+      - name: Config check
+        run: python3 scripts/check_config.py staging
+
       # npm ci and jest do not fit in the runner's memory (the last two PR runs were OOM-killed and
       # took the runner offline), so the runner only scans the change. Unit tests run in CI Build.
       - name: Credential scan

@@ -79,6 +79,7 @@ function App() {
   const [input, setInput] = useState("");
   const [theme, setTheme] = useState(getInitialTheme);
   const [filter, setFilter] = useState("all");
+  const [query, setQuery] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState("");
   const inputRef = useRef(null);
@@ -253,11 +254,14 @@ function App() {
   useEffect(() => {
     document.title = remaining > 0 ? `(${remaining}) todo-app` : "todo-app";
   }, [remaining]);
-  const filteredTodos = todos.filter((todo) => {
-    if (filter === "active") return !todo.completed;
-    if (filter === "completed") return todo.completed;
-    return true;
-  });
+  const needle = query.trim().toLowerCase();
+  const filteredTodos = todos
+    .filter((todo) => {
+      if (filter === "active") return !todo.completed;
+      if (filter === "completed") return todo.completed;
+      return true;
+    })
+    .filter((todo) => todo.text.toLowerCase().includes(needle));
 
   return (
     <div className="app">
@@ -312,6 +316,14 @@ function App() {
             {option.label}
           </button>
         ))}
+        <input
+          type="search"
+          className="search-input"
+          placeholder="Search tasks..."
+          aria-label="Search tasks"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
       </div>
 
       <ul className="todo-list">
@@ -413,7 +425,11 @@ function App() {
 
       {todos.length > 0 && filteredTodos.length === 0 && (
         <p className="empty" role="status">
-          {filter === "active" ? "No active tasks." : "No completed tasks."}
+          {query.trim()
+            ? "No tasks match your search."
+            : filter === "active"
+              ? "No active tasks."
+              : "No completed tasks."}
         </p>
       )}
 

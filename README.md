@@ -14,6 +14,7 @@ A simple React-based Todo application.
 - Move a task up or down with the arrow buttons (or `k` / `j` on a focused task)
 - Clear all completed tasks at once
 - Filter the list by all / active / completed
+- Search the list by text (case-insensitive, applied on top of the active filter)
 - See how many tasks are still open, in the list and in the browser tab title
 - Todos are kept in local storage, so they survive a reload
 - Export the list as a JSON file and import it again later (a file that is not a todo list is ignored)
