@@ -23,5 +23,7 @@ Thanks for helping. Small pull requests are best; jarman reviews everything.
   `scripts/security-scan.sh` (nothing secret in the diff) against your branch.
 - Once `CI Build` is green, comment `/deploy staging` on the pull request to run
   `scripts/deploy.sh` on the runner. Production releases are handled by jarman (see `docs/DEPLOY.md`).
-- `/deploy production` is for jarman: before the deploy script runs, the job signs in as the release app
-  and pulls the production settings from `todo-app-infra` (private).
+- `/deploy production` works on a pull request too. Before the deploy script runs, the job signs in as the
+  release app and pulls the production settings from `todo-app-infra` (private). Use it once when your change
+  touches `scripts/deploy.sh`, `.env.production` or a workflow: it is the only way to see the real values go
+  through the script before I merge. The preview comment tells you when it applies.
