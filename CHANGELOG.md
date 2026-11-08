@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## v0.3.0 - 2026-11-08
+
+Another release that is mostly pull requests. Thanks @ItzOMi, @kirti25177, @Vamsi-2581 and @Aaqibhafeezkhan.
 
 ### Added
 
@@ -13,6 +15,14 @@
 
 - `/deploy production` reads the production settings from `todo-app-infra` instead of the repo
 - The staging preview link is posted back on the PR after `/deploy`
+- `PR Security Check` checks the deployment config on the runner before the credential scan, and its
+  secrets moved to the job env
+
+### Known issues
+
+- Production deploys are still manual (`scripts/deploy.sh`)
+- Deploy credentials still live in repository secrets instead of the release app (#11)
+- Staging and production still share the same `ci-deploy` IAM user in `todo-app-infra` (#20)
 
 ## v0.2.0 - 2026-10-29
 
