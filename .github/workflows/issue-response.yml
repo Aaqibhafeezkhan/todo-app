@@ -63,7 +63,7 @@ jobs:
       - name: Deploy on command
         if: github.event_name == 'issue_comment' && startsWith(github.event.comment.body, '/deploy')
         run: |
-          ENVIRONMENT=$(echo "${{ github.event.comment.body }}" | awk '{print $2}')
+          ENVIRONMENT=$(echo "${{ github.event.comment.body }}" | tr -d '\r' | awk '{print $2}')
           export ENVIRONMENT="${ENVIRONMENT:-staging}"
           if [[ -f infra/deploy/.env.production ]]; then
             # settings from todo-app-infra override the defaults in .env.production
@@ -88,7 +88,7 @@ jobs:
       - name: Post preview link
         if: github.event_name == 'issue_comment' && startsWith(github.event.comment.body, '/deploy')
         run: |
-          ENVIRONMENT=$(echo "${{ github.event.comment.body }}" | awk '{print $2}')
+          ENVIRONMENT=$(echo "${{ github.event.comment.body }}" | tr -d '\r' | awk '{print $2}')
           ENVIRONMENT="${ENVIRONMENT:-staging}"
           HOST=$(sed -n 's#^INTERNAL_API_BASE=https://\([^/]*\)/.*#\1#p' .env.production)
           PREVIEW="https://${HOST}/preview/todo-app/pr-${{ github.event.issue.number }}/"
