@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Undo a delete: the removed todo stays in a bar under the list for five seconds with an Undo button (#32, #33)
+
+### Changed
+
+- The staging preview comment after `/deploy` also offers `/deploy production`, and both work from a pull request
+- `/deploy` comments pasted with Windows line endings no longer break the environment lookup
+
 ## v0.3.0 - 2026-11-08
 
 Another release that is mostly pull requests. Thanks @ItzOMi, @kirti25177, @Vamsi-2581 and @Aaqibhafeezkhan.

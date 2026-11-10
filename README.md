@@ -11,6 +11,7 @@ A simple React-based Todo application.
 - Mark tasks as complete
 - Edit a task in place by double-clicking it
 - Delete tasks
+- Undo a delete from the bar that appears under the list for five seconds
 - Move a task up or down with the arrow buttons (or `k` / `j` on a focused task)
 - Clear all completed tasks at once
 - Filter the list by all / active / completed
