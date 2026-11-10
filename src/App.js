@@ -85,6 +85,9 @@ function App() {
   const inputRef = useRef(null);
   const importInputRef = useRef(null);
   const [importMessage, setImportMessage] = useState("");
+  const [lastDeleted, setlastdeleted] = useState(null);
+
+  const timeoutId = useRef(null);
 
   useEffect(() => {
     try {
@@ -151,7 +154,33 @@ function App() {
     );
   };
 
+  const undoDelete = () => {
+    const prevoiusarray = [...todos];
+
+    const { todo, index } = lastDeleted;
+
+    prevoiusarray.splice(index, 0, todo);
+
+    setTodos(prevoiusarray);
+    setlastdeleted(null);
+    clearTimeout(timeoutId.current);
+  };
+
   const deleteTodo = (id) => {
+    if (timeoutId.current) {
+      clearTimeout(timeoutId.current);
+    }
+
+    const index = todos.findIndex((todo) => todo.id === id);
+
+    const todo = todos[index];
+
+    setlastdeleted({ index, todo });
+
+    timeoutId.current = setTimeout(() => {
+      setlastdeleted(null);
+    }, 5000);
+
     setTodos(todos.filter((todo) => todo.id !== id));
   };
   const moveTodo = (id, direction) => {
@@ -200,6 +229,18 @@ function App() {
 
   const clearCompleted = () => {
     setTodos(todos.filter((todo) => !todo.completed));
+  };
+
+  const toggleAll = () => {
+    const allCompleted = filteredTodos.every((todo) => todo.completed);
+    const visibleIds = new Set(filteredTodos.map((todo) => todo.id));
+    setTodos((currentTodos) =>
+      currentTodos.map((todo) =>
+        visibleIds.has(todo.id)
+          ? { ...todo, completed: !allCompleted }
+          : todo,
+      ),
+    );
   };
 
   const exportTodos = () => {
@@ -326,6 +367,13 @@ function App() {
         />
       </div>
 
+      {lastDeleted && (
+        <div className="undo-bar" role="status">
+          <span>Deleted "{lastDeleted.todo.text}"</span>
+          <button onClick={undoDelete}>Undo</button>
+        </div>
+      )}
+
       <ul className="todo-list">
         {filteredTodos.map((todo) => (
           <li
@@ -441,6 +489,18 @@ function App() {
             </p>
           )}
 
+          {filteredTodos.length > 0 && (
+            <button
+              type="button"
+              onClick={toggleAll}
+              className="toggle-all-btn"
+            >
+              {filteredTodos.every((todo) => todo.completed)
+                ? "Mark all active"
+                : "Complete all"}
+            </button>
+          )}
+
           {completed > 0 && (
             <button
               type="button"
@@ -469,11 +529,7 @@ function App() {
           >
             Import
           </button>
-          <button
-            type="button"
-            onClick={exportTodos}
-            className="todo-data-btn"
-          >
+          <button type="button" onClick={exportTodos} className="todo-data-btn">
             Export
           </button>
         </div>
