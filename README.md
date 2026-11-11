@@ -13,6 +13,7 @@ A simple React-based Todo application.
 - Delete tasks
 - Undo a delete from the bar that appears under the list for five seconds
 - Move a task up or down with the arrow buttons (or `k` / `j` on a focused task)
+- Complete all visible tasks at once, or mark them all active again (tasks hidden by a filter or search are left alone)
 - Clear all completed tasks at once
 - Filter the list by all / active / completed
 - Search the list by text (case-insensitive, applied on top of the active filter)

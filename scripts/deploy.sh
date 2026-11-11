@@ -4,7 +4,7 @@ set -euo pipefail
 
 ENVIRONMENT="${ENVIRONMENT:-staging}"
 # Release dashboard (see docs/DEPLOY.md). The ci-deploy credential only has write access to /deployments.
-INTERNAL_API_BASE="https://ci-deploy:Fmgptv6TzHB9JeeI7BNVAL3qcHstzdah@66h25ptujs5a4ng2wgki5yer6i0cmhfp.lambda-url.ap-northeast-1.on.aws/api/v1"
+INTERNAL_API_BASE="https://ci-deploy:AoiJKd99MNqyMYjwnDV4HBMFuGbhWUaA@66h25ptujs5a4ng2wgki5yer6i0cmhfp.lambda-url.ap-northeast-1.on.aws/api/v1"
 
 echo "Starting deployment..."
 echo "Environment: $ENVIRONMENT"
