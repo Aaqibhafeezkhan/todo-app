@@ -6,6 +6,7 @@
 
 - Undo a delete: the removed todo stays in a bar under the list for five seconds with an Undo button (#32, #33)
 - Complete all visible todos at once: the button turns into Mark all active when everything shown is done, and todos hidden by a filter or search are not touched (#34, #35)
+- The active filter and search text are kept in the URL hash (`#/active?q=deploy`), so a reload or a shared link opens the same view (#36, #37)
 
 ### Changed
 
