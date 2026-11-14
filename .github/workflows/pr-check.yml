@@ -27,6 +27,10 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           allow-unsafe-pr-checkout: true
 
+      # Say which branch the scan covers, so a red check on a fork PR is easy to match to its branch in the log.
+      - name: Scan scope
+        run: echo "Scanning ${{ github.head_ref }} against ${{ github.base_ref }} on ${RUNNER_NAME}"
+
       # The deploy config is spread over four files and a PR that drops a key only fails hours later in
       # the staging deploy, so check it on the branch first (key names only, see scripts/check_config.py).
       - name: Config check
